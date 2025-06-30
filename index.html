@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        overflow-x: hidden;
+      }
+      .main {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+      }
+      canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .text {
+        padding: 36px;
+        font-size: 32px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="main"></div>
+    <div class="text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. In dignissimos animi ullam necessitatibus id repellat consequatur corrupti nulla nam tenetur nostrum consectetur quasi saepe quaerat dolore, neque architecto voluptates eius optio incidunt aut fugit ad nihil. Corporis ut doloribus voluptas non, at quo suscipit tempore hic vitae a temporibus doloremque dolor sunt aperiam necessitatibus fuga repellendus qui pariatur omnis cupiditate expedita sed blanditiis aliquam? Harum dolores sed, at soluta quo mollitia excepturi ullam a cum iure laboriosam quam ab, fugiat molestias? Aliquid dolor velit laudantium vero, culpa, architecto tempora reprehenderit quia officia explicabo quidem sint iusto molestiae suscipit doloremque consectetur porro quisquam aut voluptatibus labore voluptatum neque et ratione dolorum. Hic minima sed non culpa qui asperiores quia, blanditiis excepturi reprehenderit pariatur perferendis impedit eaque quis maxime, unde autem, animi id? Iste, est dignissimos. Laborum eos voluptates est voluptas cupiditate temporibus modi, quod officiis corrupti voluptate tempore ipsam vel quidem ab cum et consequuntur quos omnis mollitia possimus unde ut! Voluptas labore commodi quis, nisi, ratione repellat eveniet quaerat quasi maiores modi itaque earum, consectetur cum possimus? Officiis expedita quibusdam distinctio et perspiciatis laboriosam quaerat amet dolorum, odit, optio aperiam. Quas magni, adipisci fuga possimus voluptate deserunt corrupti dolor reprehenderit! Explicabo nemo ducimus doloribus minus, cumque voluptatem nobis possimus voluptate sed eum magnam dicta tenetur consectetur ex atque illo dolores aliquam beatae iusto nisi itaque! Quis quia ex nemo autem et excepturi omnis odit nostrum, dolor eum optio enim eaque aut culpa corrupti, magni aliquam, dolorem hic suscipit! Eius nulla explicabo illo provident, consequatur rerum, reiciendis, a molestias vel dolores animi tempora quaerat repellat doloribus. Doloribus id molestiae consequatur numquam aut eum atque, excepturi porro praesentium ad velit eaque rem corrupti doloremque unde illo commodi, ipsum accusantium. Possimus officia, beatae velit ea sed minima dolorem voluptatem quas a ex quos earum iusto sequi atque odio distinctio magnam non soluta aspernatur error nihil dolor consequatur sint accusamus. Doloremque id assumenda dolorum officiis libero pariatur, aspernatur sit eum cupiditate aperiam voluptate ad, atque esse. Corrupti cupiditate reiciendis amet cum mollitia fugiat suscipit aliquid laborum magni? Obcaecati molestias magni dolorum fuga reiciendis qui aperiam repellat suscipit distinctio. Voluptates, ab qui? Perferendis possimus saepe harum exercitationem nemo at reprehenderit cumque neque deserunt nesciunt rerum in veritatis accusantium recusandae id aliquid numquam nobis unde explicabo, ratione facere eum eveniet. Aspernatur officiis id modi delectus eveniet dicta? Quidem corrupti minus voluptas, quaerat inventore est ullam, illo qui molestiae quibusdam nulla porro reiciendis? Ipsa ab laborum quibusdam ipsam modi officiis explicabo minima deleniti, odio tempore, iste accusantium sint! Provident, explicabo et? Deleniti corporis vel ullam ratione veritatis? Earum, id numquam. Libero et porro nulla sit accusamus officia ex dolorum praesentium neque quas quae dicta vero deserunt distinctio placeat, iusto, animi beatae deleniti? Ea obcaecati tempore, ipsam eaque mollitia odit unde provident facere illo perspiciatis quo dolor quas nemo at suscipit totam temporibus quasi adipisci harum? Amet corrupti repellat recusandae. Ad, officia laborum! Voluptatum perferendis voluptatem, sequi saepe iusto placeat repellat cum non deleniti delectus, quasi ipsa mollitia.</div>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/p5.min.js"></script>
+    <script>
+
+      var system = {
+        text: "boom",
+        flow: 0,
+        topSpeed: 500,
+        lifeSpan: 1200,
+        flowOffset: 0,
+        gravity: {
+          direction: 280,
+          force: 2,
+        },
+      };
+      let colors = [
+        "#000",
+        "#7c7c7c",
+        "#6c6c6c",
+        "#010101",
+        "#FFF"
+      ];
+      class Particle {
+        constructor(x, y, size, index) {
+          this.base_size = size;
+          this.index = index || 0;
+          this.spawn = createVector(x, y);
+          this.init();
+        }
+        init() {
+          this.size = this.base_size * random(0.3, 1.5);
+
+          this.start = millis();
+          this.position = this.spawn.copy();
+          this.velocity = createVector(0, 0);
+          this.acceleration = createVector(0, 0);
+          this.duration = system.lifeSpan * random(0.2, 1.2);
+          this.drag = random(0.9, 1);
+          this.addForce(new p5.Vector.fromAngle(random(TWO_PI), random(10)));
+          this.color = random(colors);
+        }
+        display() {
+          let s = 1;
+          if (millis() - this.start < this.duration * 0.1) {
+            s = map(millis() - this.start, 0, this.duration * 0.1, 0, 1);
+          } else if (millis() - this.start > this.duration * 0.5) {
+            s = map(
+              millis() - this.start,
+              this.duration * 0.5,
+              this.duration,
+              1,
+              0
+            );
+          }
+          fill(this.color);
+          circle(
+            this.position.x,
+            this.position.y,
+            this.size *
+              s *
+              map(this.velocity.mag(), 0, system.topSpeed, 0.5, 1.2)
+          );
+        }
+        update() {
+          this.velocity.add(this.acceleration);
+          this.velocity.limit(system.topSpeed);
+          this.velocity.mult(this.drag);
+          this.position.add(this.velocity.copy().mult(1 / _targetFrameRate));
+          this.acceleration.mult(0);
+          if (
+            this.position.y > height ||
+            millis() - this.start > this.duration
+          ) {
+            this.init();
+          }
+        }
+        addForce(vector) {
+          this.acceleration.add(vector);
+        }
+      }
+
+      let particles = [],
+        field = [],
+        fieldStep,
+        gravity;
+      function setGravity() {
+        gravity = new p5.Vector.fromAngle(
+          radians(system.gravity.direction),
+          system.gravity.force
+        );
+      }
+      function setup() {
+        createCanvas(innerWidth, innerHeight);
+        setGravity();
+        init();
+        frameRate(60);
+        noStroke();
+        colorMode(HSL, 100);
+      }
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+        init();
+      }
+      function init() {
+        clear();
+        fill(0);
+        textSize(12);
+        textStyle(BOLD);
+        let text_box_width = min(width, 1200) * 0.8;
+        let minSizeW = (12 / textWidth(system.text)) * text_box_width;
+        textSize(minSizeW);
+        text(system.text, width / 2 - text_box_width / 2, height / 1.8);
+        // Scan the canvas searching for black pixels
+        // particles will spawn from there :)
+        noFill();
+        particles = [];
+        let step = floor(max(width, height) / min(160, min(width, height)));
+        let i = 0;
+        for (let x = 0; x < width; x += step) {
+          for (let y = 0; y < height; y += step) {
+            let target_x = x + step / 2,
+              target_y = y + step / 2;
+            let alpha = get(target_x, target_y)[3];
+            if (alpha > 0.5) {
+              particles.push(new Particle(target_x, target_y, step * 3, i));
+              i++;
+            }
+          }
+        }
+        field = {};
+        clear();
+        step = fieldStep = floor(
+          max(width, height) / min(20, min(width, height))
+        );
+        i = 0;
+        for (let x = 0; x < width; x += step) {
+          for (let y = 0; y < height; y += step) {
+            i++;
+            let a = noise(i) * TWO_PI;
+            field[`${x}-${y}`] = a;
+            translate(x, y);
+            rotate(a);
+            rect(-step / 4, -step / 2, step / 2, step);
+            resetMatrix();
+          }
+        }
+
+        clear();
+      }
+
+      function draw() {
+        background('#ccc');
+        particles.forEach((particle, i) => {
+          particle.addForce(gravity);
+          // search field
+          particle.addForce(
+            new p5.Vector.fromAngle(
+              field[
+                `${particle.position.x - (particle.position.x % fieldStep)}-${
+                  particle.position.y - (particle.position.y % fieldStep)
+                }`
+              ] + system.flowOffset,
+              system.flow
+            )
+          );
+          particle.update();
+          particle.display();
+        });
+      }
+    </script>
+  </body>
+</html>
